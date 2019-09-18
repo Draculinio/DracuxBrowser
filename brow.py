@@ -1,13 +1,17 @@
 from html.parser import HTMLParser
 import requests
-import curses
+import sys
+
+class terminal_colors:
+    GREEN = '\x1b[0;32;47m'
+    ENDC = '\x1b[0m'
 
 class parse_html(HTMLParser):
     def __init__(self):
         self.final_brow = "---Dracux Browser---   "
         self.print_data = False
         HTMLParser.__init__(self)
-
+        self.colors = terminal_colors()
     def handle_starttag(self, tag, attrs):
         if tag=='title':
             self.final_brow+='*'
@@ -15,7 +19,8 @@ class parse_html(HTMLParser):
         elif tag=='p':
             self.print_data = True
         elif tag=='a':
-            self.final_brow+="<"
+                
+            self.final_brow+=self.colors.GREEN+"<"
             self.print_data = True
 
     def handle_endtag(self, tag):
@@ -24,7 +29,7 @@ class parse_html(HTMLParser):
         elif tag =='p':
             self.final_brow+='\n'
         elif tag == 'a':
-            self.final_brow+=">"
+            self.final_brow+=">"+self.colors.ENDC
 
     def handle_data(self, data):
         if self.print_data == True:
@@ -52,9 +57,10 @@ class browse:
         self.navigate()
 
 if __name__ == '__main__':
-    use_curses = input("Use curses? Y/N")
-    if use_curses.upper=="Y":
-        standard_screen = curses.initscr()
+    use_colors = input("Use colors? Y/N: ")
+    if use_colors.upper=="Y":
+        print("I will go all in a boring black & white")
+
     my_browser = browse()
     while my_browser.keep_going:
         my_browser.get_page() 
