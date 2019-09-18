@@ -1,5 +1,6 @@
 from html.parser import HTMLParser
 import requests
+import curses
 
 class parse_html(HTMLParser):
     def __init__(self):
@@ -50,6 +51,10 @@ class browse:
         print(parser.final_brow)
         self.navigate()
 
-my_browser = browse()
-while my_browser.keep_going:
-    my_browser.get_page() 
+if __name__ == '__main__':
+    use_curses = input("Use curses? Y/N")
+    if use_curses.upper=="Y":
+        standard_screen = curses.initscr()
+    my_browser = browse()
+    while my_browser.keep_going:
+        my_browser.get_page() 
