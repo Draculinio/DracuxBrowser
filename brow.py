@@ -39,9 +39,11 @@ class browse:
         self.keep_going = True
     def navigate(self):
         self.my_url = input("Url: ")
-        if self.my_url.upper() == 'Q':
+        if self.my_url.upper() == 'Q':   #first commands
             self.keep_going = False #TODO: this needs an url manager.
-        else:
+        else:   #Other things
+            if self.my_url[0:4]!="http":
+                self.my_url = "http://www."+self.my_url
             self.r = requests.get(self.my_url)
     def get_page(self):
         parser = parse_html()
@@ -60,4 +62,4 @@ if __name__ == '__main__':
         init()
     my_browser = browse()
     while my_browser.keep_going:
-        my_browser.get_page() 
+        my_browser.get_page()
