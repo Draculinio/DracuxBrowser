@@ -5,7 +5,7 @@ from colorama import init, Fore, Back, Style
 
 class parse_html(HTMLParser):
     def __init__(self):
-        self.final_brow = "---Dracux Browser---   "
+        self.final_brow = "---Dracux Browser---            "
         self.print_data = False
         HTMLParser.__init__(self)
     def handle_starttag(self, tag, attrs):
@@ -15,9 +15,14 @@ class parse_html(HTMLParser):
         elif tag=='p':
             self.print_data = True
         elif tag=='a':
-                
             self.final_brow+=Fore.RED+'<'
             self.print_data = True
+        elif tag=='input':
+            for attr in attrs:
+                if attr[0]=='type':
+                    if attr[1]=='text':
+                        self.final_brow+=Back.WHITE+'__________________'+Back.BLACK+'\n'
+            #print(attrs)
 
     def handle_endtag(self, tag):
         if tag=='title':
@@ -32,6 +37,9 @@ class parse_html(HTMLParser):
             self.final_brow+=data
             self.print_data = False
 
+    def get_url(self,url):
+        self.final_brow += Fore.BLUE+url+Fore.WHITE+"      "
+
 class browse:
     def __init__(self):
         self.my_url='http://www.dracux.com'
@@ -42,11 +50,18 @@ class browse:
         if self.my_url.upper() == 'Q':   #first commands
             self.keep_going = False #TODO: this needs an url manager.
         else:   #Other things
-            if self.my_url[0:4]!="http":
+            if '.' not in self.my_url:
+                self.my_url = 'http://www.duckduckgo.com/?q='+self.my_url
+
+            elif self.my_url[0:4]!="http":
                 self.my_url = "http://www."+self.my_url
-            self.r = requests.get(self.my_url)
+            try:
+                self.r = requests.get(self.my_url)
+            except:
+                print("Site Does not exist")
     def get_page(self):
         parser = parse_html()
+        parser.get_url(self.my_url)
         try:
             parser.feed(self.r.text)
         except:
