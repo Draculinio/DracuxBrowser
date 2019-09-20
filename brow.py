@@ -20,6 +20,7 @@ class parse_html(HTMLParser):
         elif tag=='input':
             for attr in attrs:
                 if attr[0]=='type':
+                    print (attr[1])
                     if attr[1]=='text':
                         self.final_brow+=Back.WHITE+'__________________'+Back.BLACK+'\n'
             #print(attrs)
@@ -41,7 +42,7 @@ class parse_html(HTMLParser):
         self.final_brow += Fore.BLUE+url+Fore.WHITE+"      "
 
 class browse:
-    def __init__(self):
+    def __init__(self,initial_url):
         self.my_url='http://www.dracux.com'
         self.r = '<Title>Welcome to my Browser</title>'
         self.keep_going = True
@@ -70,11 +71,25 @@ class browse:
         self.navigate()
 
 if __name__ == '__main__':
-    use_colors = input("Use colors? Y/N: ")
-    if use_colors.upper=="N":
-        print("I will go all in a boring black & white")
+    #managing arguments
+    colors= False
+    initial_url="http://www.dracux.com"
+    if sys.argv[1].upper()=='C': #C argument starts with color
+        print("COLOR")
+        colors=True
+    elif sys.argv[1]!=None:
+        initial_url=sys.argv[1]
+    #end of managing arguments
+    if colors==False:
+        use_colors = input("Use colors? Y/N: ")
+        if use_colors.upper()=="N":
+            colors = False
+            print("I will go all in a boring black & white")
+        else:
+            colors = True
+            init()
     else:
         init()
-    my_browser = browse()
+    my_browser = browse(initial_url)
     while my_browser.keep_going:
         my_browser.get_page()
