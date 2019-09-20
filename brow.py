@@ -20,7 +20,6 @@ class parse_html(HTMLParser):
         elif tag=='input':
             for attr in attrs:
                 if attr[0]=='type':
-                    print (attr[1])
                     if attr[1]=='text':
                         self.final_brow+=Back.WHITE+'__________________'+Back.BLACK+'\n'
             #print(attrs)
@@ -43,11 +42,10 @@ class parse_html(HTMLParser):
 
 class browse:
     def __init__(self,initial_url):
-        self.my_url='http://www.dracux.com'
+        self.my_url=initial_url
         self.r = '<Title>Welcome to my Browser</title>'
         self.keep_going = True
     def navigate(self):
-        self.my_url = input("Url: ")
         if self.my_url.upper() == 'Q':   #first commands
             self.keep_going = False #TODO: this needs an url manager.
         else:   #Other things
@@ -60,6 +58,8 @@ class browse:
                 self.r = requests.get(self.my_url)
             except:
                 print("Site Does not exist")
+    def set_url(self):
+        self.my_url = input("Url: ")
     def get_page(self):
         parser = parse_html()
         parser.get_url(self.my_url)
@@ -68,17 +68,20 @@ class browse:
         except:
             parser.feed(self.r)
         print(parser.final_brow)
+        self.set_url()
         self.navigate()
+        
 
 if __name__ == '__main__':
-    #managing arguments
     colors= False
     initial_url="http://www.dracux.com"
-    if sys.argv[1].upper()=='C': #C argument starts with color
-        print("COLOR")
-        colors=True
-    elif sys.argv[1]!=None:
-        initial_url=sys.argv[1]
+    #managing arguments
+    if len(sys.argv)>1:
+        if sys.argv[1].upper()=='C': #C argument starts with color
+            print("COLOR")
+            colors=True
+        elif sys.argv[1]!=None:
+            initial_url=sys.argv[1]
     #end of managing arguments
     if colors==False:
         use_colors = input("Use colors? Y/N: ")
@@ -91,5 +94,6 @@ if __name__ == '__main__':
     else:
         init()
     my_browser = browse(initial_url)
+    my_browser.navigate()
     while my_browser.keep_going:
         my_browser.get_page()
